@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d0a">
+    <title>SecureVault | Workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="#dashboard" aria-label="SecureVault home">
+                <span class="brand-mark">S</span><span>Secure<span class="brand-accent">Vault</span><i>.</i></span>
+            </a>
+
+            <div class="sidebar-label">WORKSPACE</div>
+            <nav class="side-nav" aria-label="Main navigation">
+                <a href="#dashboard" class="nav-link active" data-view="dashboard"><span
+                        class="nav-icon">⌂</span>Dashboard</a>
+                <a href="#my-files" class="nav-link" data-view="my-files"><span class="nav-icon">▤</span>My Files</a>
+                <a href="#shared-with-me" class="nav-link" data-view="shared-with-me"><span
+                        class="nav-icon">⇩</span>Shared With Me</a>
+                <a href="#shared-by-me" class="nav-link" data-view="shared-by-me"><span class="nav-icon">⇧</span>Shared
+                    By Me</a>
+                <a href="#upload" class="nav-link" data-view="upload"><span class="nav-icon">＋</span>Upload Files</a>
+            </nav>
+
+            <div class="sidebar-label security-label">SECURITY</div>
+            <nav class="side-nav">
+                <a href="#security" class="nav-link" data-view="security"><span class="nav-icon">◇</span>Encryption
+                    Security</a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="account-chip">
+                    <span class="online-dot"></span>
+                    <span id="sidebarEmail">Loading account...</span>
+                </div>
+                <button id="logoutButton" class="logout-button" type="button" onclick="logoutUser()">
+                    <span class="logout-icon">↪</span> Sign out
+                </button>
+                <span id="userEmail" hidden></span>
+                <div class="sidebar-footnote">SECURE FILE TRANSFER · v1.0</div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <div class="eyebrow"><span class="eyebrow-dot"></span> PRIVATE WORKSPACE</div>
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Your secure file activity at a glance.</p>
+                </div>
+                <div class="topbar-status"><span class="status-pulse"></span> Secure environment</div>
+            </header>
+
+            <section class="view-section active-view" id="dashboard" data-title="Dashboard"
+                data-subtitle="Your secure file activity at a glance.">
+                <div class="welcome-panel">
+                    <div>
+                        <span class="panel-kicker">YOUR DIGITAL WORKSPACE</span>
+                        <h2>Everything you share,<br><span>protected by design.</span></h2>
+                        <p>Store, manage and share files through your encrypted workspace.</p>
+                        <button class="button button-primary" type="button" data-open-view="upload">Upload a file
+                            <span>↗</span></button>
+                    </div>
+                    <div class="welcome-art" aria-hidden="true">
+                        <div class="orbit orbit-one"></div>
+                        <div class="orbit orbit-two"></div>
+                        <div class="vault-icon"><span>⌑</span><i></i></div>
+                        <div class="art-tag tag-top">AES-256-GCM</div>
+                        <div class="art-tag tag-bottom"><span class="online-dot"></span> End-to-end workflow</div>
+                    </div>
+                </div>
+
+                <div class="section-heading">
+                    <div><span class="panel-kicker">OVERVIEW</span>
+                        <h2>Workspace overview</h2>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon">▤</span><span class="stat-label">FILE
+                                STORAGE</span></div><strong id="dashboardFileCount">—</strong>
+                        <p>Your uploaded files</p>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon">⇧</span><span class="stat-label">SHARED BY
+                                YOU</span></div><strong id="dashboardSentCount">—</strong>
+                        <p>Active outgoing shares</p>
+                    </article>
+                    <article class="stat-card">
+                        <div class="stat-top"><span class="stat-icon">⇩</span><span class="stat-label">SHARED WITH
+                                YOU</span></div><strong id="dashboardReceivedCount">—</strong>
+                        <p>Files received from others</p>
+                    </article>
+                    <article class="stat-card accent-stat">
+                        <div class="stat-top"><span class="stat-icon">◇</span><span class="stat-label">ENCRYPTION</span>
+                        </div><strong>AES-256</strong>
+                        <p>GCM authenticated encryption</p>
+                    </article>
+                </div>
+
+                <div class="dashboard-bottom-grid">
+                    <article class="content-card quick-card">
+                        <div class="card-heading">
+                            <div><span class="panel-kicker">GET STARTED</span>
+                                <h3>Quick actions</h3>
+                            </div>
+                        </div>
+                        <button class="quick-action" type="button" data-open-view="my-files"><span
+                                class="quick-icon">▤</span><span><b>Browse my files</b><small>View and manage your
+                                    uploads</small></span><i>→</i></button>
+                        <button class="quick-action" type="button" data-open-view="shared-with-me"><span
+                                class="quick-icon">⇩</span><span><b>Open shared files</b><small>Access files shared with
+                                    you</small></span><i>→</i></button>
+                        <button class="quick-action" type="button" data-open-view="upload"><span
+                                class="quick-icon">＋</span><span><b>Upload something new</b><small>Encrypt and store a
+                                    file</small></span><i>→</i></button>
+                    </article>
+                    <article class="content-card protection-card">
+                        <div class="protection-symbol">◇</div><span class="panel-kicker">SECURITY LAYER</span>
+                        <h3>Protected at every step.</h3>
+                        <p>Your files are encrypted before being stored. Access to shared files is controlled by your
+                            account permissions.</p>
+                        <button class="text-link" type="button" data-open-view="security">Explore security details
+                            <span>→</span></button>
+                    </article>
+                </div>
+            </section>
+
+            <section class="view-section" id="my-files" data-title="My Files"
+                data-subtitle="Manage the files stored in your secure workspace.">
+                <div class="content-card">
+                    <div class="section-toolbar">
+                        <div><span class="panel-kicker">PERSONAL STORAGE</span>
+                            <h2>Your files</h2>
+                            <p class="section-description">Files uploaded to your account.</p>
+                        </div><button type="button" class="button button-secondary" id="refreshFilesButton"
+                            onclick="loadMyFiles()">↻ &nbsp; Refresh</button>
+                    </div>
+                    <p class="message" id="myFilesMessage"></p>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>FILE ID</th>
+                                    <th>FILE NAME</th>
+                                    <th>TYPE</th>
+                                    <th>SIZE</th>
+                                    <th>UPLOADED AT</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myFilesTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-files">Loading your files...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view-section" id="shared-with-me" data-title="Shared With Me"
+                data-subtitle="Files other people have shared with your account.">
+                <div class="content-card">
+                    <div class="section-toolbar">
+                        <div><span class="panel-kicker">INCOMING SHARES</span>
+                            <h2>Shared with me</h2>
+                            <p class="section-description">Access files shared with your account.</p>
+                        </div><button type="button" class="button button-secondary" onclick="loadSharedWithMe()">↻
+                            &nbsp; Refresh</button>
+                    </div>
+                    <p class="message" id="sharedWithMeMessage"></p>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>FILE NAME</th>
+                                    <th>TYPE</th>
+                                    <th>SIZE</th>
+                                    <th>SHARED BY</th>
+                                    <th>SHARED AT</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sharedWithMeTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-files">Loading shared files...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view-section" id="shared-by-me" data-title="Shared By Me"
+                data-subtitle="Review and manage the access you have granted.">
+                <div class="content-card">
+                    <div class="section-toolbar">
+                        <div><span class="panel-kicker">OUTGOING SHARES</span>
+                            <h2>Shared by me</h2>
+                            <p class="section-description">Files you have shared with other users.</p>
+                        </div><button type="button" class="button button-secondary" onclick="loadSharedByMe()">↻ &nbsp;
+                            Refresh</button>
+                    </div>
+                    <p class="message" id="sharedByMeMessage"></p>
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>FILE NAME</th>
+                                    <th>TYPE</th>
+                                    <th>SIZE</th>
+                                    <th>SHARED WITH</th>
+                                    <th>SHARED AT</th>
+                                    <th>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sharedByMeTableBody">
+                                <tr>
+                                    <td colspan="6" class="empty-files">Loading shared files...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view-section" id="upload" data-title="Upload Files"
+                data-subtitle="Encrypt a file and securely share it with another registered user.">
+                <div class="upload-layout">
+                    <article class="content-card upload-card">
+                        <span class="panel-kicker">NEW FILE</span>
+                        <h2>Upload and encrypt</h2>
+                        <p class="section-description">Choose a file from your device. It will be encrypted before
+                            storage.</p>
+                        <div class="drop-zone">
+                            <form id="uploadForm">
+                                <input type="file" id="fileInput" name="file" required hidden>
+                                <label class="file-select-trigger" for="fileInput">
+                                    <span class="upload-symbol">↑</span>
+                                    <strong>Select a file</strong>
+                                    <span class="file-select-hint" id="selectedFileName">Choose a file from your device
+                                        to get started.</span>
+                                </label>
+                                <button type="submit" class="button button-primary">Upload &amp; encrypt
+                                    <span>↗</span></button>
+                            </form>
+                        </div>
+                        <p class="message" id="uploadMessage"></p>
+                    </article>
+                    <article class="content-card share-card">
+                        <span class="panel-kicker">RECIPIENT ACCESS</span>
+                        <h2>Share a file</h2>
+                        <p class="section-description">Grant access to another registered SecureVault user.</p>
+                        <form id="shareFileForm" class="form-stack">
+                            <label for="shareFileId">File ID</label><input type="number" id="shareFileId"
+                                placeholder="e.g. 12" min="1" required>
+                            <label for="recipientEmail">Recipient email</label><input type="email" id="recipientEmail"
+                                placeholder="name@example.com" required>
+                            <button type="submit" class="button button-primary">Share securely <span>↗</span></button>
+                        </form>
+                        <p class="message" id="shareFileMessage"></p>
+                        <div class="inline-note"><span>◇</span> You can revoke access anytime from Shared By Me.</div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="view-section" id="security" data-title="Security Center"
+                data-subtitle="Understand the protection used by your file transfer system.">
+                <div class="security-hero content-card">
+                    <div><span class="panel-kicker">ENCRYPTION STANDARD</span>
+                        <h2>Authenticated encryption.<br><span>Integrity built in.</span></h2>
+                        <p>SecureVault uses AES-256-GCM to encrypt file content and authenticate the encrypted data.</p>
+                    </div>
+                    <div class="security-badge">AES<br><b>256</b></div>
+                </div>
+                <div class="security-grid">
+                    <article class="content-card security-item"><span class="security-item-icon">◇</span><span
+                            class="panel-kicker">ALGORITHM</span>
+                        <h3>AES-256-GCM</h3>
+                        <p>Authenticated encryption with associated data (AEAD).</p>
+                    </article>
+                    <article class="content-card security-item"><span class="security-item-icon">⌁</span><span
+                            class="panel-kicker">AUTHENTICATION TAG</span>
+                        <h3>128-bit</h3>
+                        <p>Detects modification of encrypted content during decryption.</p>
+                    </article>
+                    <article class="content-card security-item"><span class="security-item-icon">◉</span><span
+                            class="panel-kicker">NONCE</span>
+                        <h3>12 bytes</h3>
+                        <p>A unique nonce is used for each encryption operation.</p>
+                    </article>
+                </div>
+                <div class="content-card security-note"><b>Project security note</b>
+                    <p>This is an academic prototype. Production deployment requires secure key management, HTTPS, CSRF
+                        protection and operational hardening.</p>
+                </div>
+            </section>
+
+            <footer class="app-footer">SECUREVAULT <span>·</span> SECURE FILE TRANSFER SYSTEM</footer>
+        </main>
+    </div>
+
+    <script>
+
+
+
+
+        // Download an owned file by its database ID.
+        async function downloadMyFile(fileId, originalFilename, button) {
+            const previousText = button.textContent;
+            button.disabled = true;
+            button.textContent = "Preparing...";
+
+            try {
+                const response = await fetch(
+                    "/api/files/" + encodeURIComponent(fileId) + "/download",
+                    {
+                        method: "POST",
+                        credentials: "same-origin"
+                    }
+                );
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = "/login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || "Download failed (HTTP " + response.status + ").");
+                }
+
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+
+                link.href = objectUrl;
+                link.download = originalFilename || "download";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+            } catch (error) {
+                alert("Download failed: " + error.message);
+            } finally {
+                button.disabled = false;
+                button.textContent = previousText;
+            }
+        }
+
+        // My Files: fetch only the current user's file metadata.
+        async function loadMyFiles() {
+            const tableBody = document.getElementById("myFilesTableBody");
+            const message = document.getElementById("myFilesMessage");
+            const refreshButton = document.getElementById("refreshFilesButton");
+
+            tableBody.replaceChildren();
+
+            const loadingRow = document.createElement("tr");
+            const loadingCell = document.createElement("td");
+            loadingCell.colSpan = 6;
+            loadingCell.className = "empty-files";
+            loadingCell.textContent = "Loading your files...";
+            loadingRow.appendChild(loadingCell);
+            tableBody.appendChild(loadingRow);
+
+            if (refreshButton) refreshButton.disabled = true;
+            message.textContent = "";
+
+            try {
+                const response = await fetch("/api/files/my-files", {
+                    method: "GET",
+                    credentials: "same-origin"
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = "/login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Unable to load files.");
+                }
+
+                const files = await response.json();
+                const dashboardFileCount = document.getElementById("dashboardFileCount");
+
+                if (dashboardFileCount) {
+                    dashboardFileCount.textContent = Array.isArray(files) ? files.length : 0;
+                }
+                tableBody.replaceChildren();
+
+                if (!Array.isArray(files) || files.length === 0) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+                    cell.colSpan = 6;
+                    cell.className = "empty-files";
+                    cell.textContent = "No files uploaded yet.";
+                    row.appendChild(cell);
+                    tableBody.appendChild(row);
+                    return;
+                }
+
+                for (const file of files) {
+                    const row = document.createElement("tr");
+                    const idCell = document.createElement("td");
+                    idCell.textContent = file.id;
+
+                    const nameCell = document.createElement("td");
+                    nameCell.className = "file-name-cell";
+                    nameCell.textContent = file.originalFilename || "Unnamed file";
+
+                    const typeCell = document.createElement("td");
+                    typeCell.textContent = file.contentType || "Unknown";
+
+                    const sizeCell = document.createElement("td");
+                    const bytes = Number(file.fileSize);
+                    sizeCell.textContent = Number.isFinite(bytes)
+                        ? (bytes / (1024 * 1024)).toFixed(2) + " MB"
+                        : "Unknown";
+
+                    const dateCell = document.createElement("td");
+                    const uploadedDate = file.uploadedAt
+                        ? new Date(file.uploadedAt)
+                        : null;
+
+                    dateCell.textContent =
+                        uploadedDate && !Number.isNaN(uploadedDate.getTime())
+                            ? uploadedDate.toLocaleString()
+                            : "Unknown";
+
+                    const actionCell = document.createElement("td");
+
+                    // Download button
+                    const downloadButton = document.createElement("button");
+                    downloadButton.type = "button";
+                    downloadButton.className = "primary-btn";
+                    downloadButton.textContent = "Download";
+
+                    downloadButton.addEventListener("click", () => {
+                        downloadMyFile(
+                            file.id,
+                            file.originalFilename,
+                            downloadButton
+                        );
+                    });
+
+                    // Delete button
+                    const deleteButton = document.createElement("button");
+                    deleteButton.type = "button";
+                    deleteButton.className = "danger-btn";
+                    deleteButton.textContent = "Delete";
+
+                    deleteButton.addEventListener("click", () => {
+                        deleteMyFile(file.id, file.originalFilename, deleteButton);
+                    });
+
+                    actionCell.append(downloadButton, deleteButton);
+
+                    row.append(
+                        idCell,
+                        nameCell,
+                        typeCell,
+                        sizeCell,
+                        dateCell,
+                        actionCell
+                    );
+
+                    tableBody.appendChild(row);
+                }
+
+            } catch (error) {
+                tableBody.replaceChildren();
+
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 6;
+                cell.className = "empty-files";
+                cell.textContent = error.message;
+
+                row.appendChild(cell);
+                tableBody.appendChild(row);
+
+                message.textContent = "Could not load files.";
+
+            } finally {
+                if (refreshButton) refreshButton.disabled = false;
+            }
+        }
+
+
+        // Delete file
+        async function deleteMyFile(fileId, filename, button) {
+
+            const confirmed = confirm(
+                "Are you sure you want to delete " + filename + "?"
+            );
+
+            if (!confirmed) return;
+
+            button.disabled = true;
+            button.textContent = "Deleting...";
+
+            try {
+                const response = await fetch("/api/files/" + fileId, {
+                    method: "DELETE",
+                    credentials: "same-origin"
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = "/login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("File deletion failed.");
+                }
+
+                alert("File deleted successfully!");
+
+                // Automatically refresh all file sections
+                await loadMyFiles();
+                await loadSharedByMe();
+                await loadSharedWithMe();
+
+            } catch (error) {
+                alert(error.message);
+                button.disabled = false;
+                button.textContent = "Delete";
+            }
+        }
+
+        // Show selected file name in the Select a file area
+        document.getElementById("fileInput").addEventListener("change", function () {
+            const name = this.files && this.files.length ? this.files[0].name : "Choose a file from your device to get started.";
+            document.getElementById("selectedFileName").textContent = name;
+        });
+
+        // Upload and Encrypt
+
+        document.getElementById("uploadForm")
+
+            .addEventListener("submit", async function (event) {
+
+
+
+                event.preventDefault();
+
+
+
+                const file = document.getElementById("fileInput").files[0];
+
+
+
+                if (!file) return;
+
+
+
+                const formData = new FormData();
+
+                formData.append("file", file);
+
+
+
+                const message = document.getElementById("uploadMessage");
+
+
+
+                message.textContent = "Uploading and encrypting...";
+
+
+
+                try {
+
+
+
+                    const response = await fetch("/api/upload", {
+
+                        method: "POST",
+
+                        body: formData
+
+                    });
+
+
+
+                    const result = await response.text();
+
+
+
+                    if (!response.ok) {
+
+                        throw new Error(result);
+
+                    }
+
+
+
+                    message.textContent = result;
+
+                    await loadMyFiles();
+                    await loadSharedByMe();
+                    await loadSharedWithMe();
+
+
+                } catch (error) {
+
+
+
+                    message.textContent = "Upload failed: " + error.message;
+
+
+
+                }
+
+
+            });
+        function escapeHtml(value) {
+            return String(value ?? "").replace(/[&<>"']/g, character => {
+                const entities = {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                };
+
+                return entities[character];
+            });
+        }
+
+        async function loadSharedWithMe() {
+            const tableBody = document.getElementById("sharedWithMeTableBody");
+            const message = document.getElementById("sharedWithMeMessage");
+
+            tableBody.innerHTML = `
+        <tr><td colspan="6">Loading shared files...</td></tr>
+    `;
+
+            try {
+                const response = await fetch("/api/shares/received");
+
+                if (response.status === 401 || response.status === 403) {
+                    tableBody.innerHTML = `
+                <tr><td colspan="6">Please login again.</td></tr>
+            `;
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Failed to load shared files.");
+                }
+
+                const files = await response.json();
+                const dashboardReceivedCount = document.getElementById("dashboardReceivedCount");
+
+                if (dashboardReceivedCount) {
+                    dashboardReceivedCount.textContent = Array.isArray(files) ? files.length : 0;
+                }
+
+                tableBody.innerHTML = "";
+
+                if (files.length === 0) {
+                    tableBody.innerHTML = `
+                <tr><td colspan="6">No files shared with you yet.</td></tr>
+            `;
+                    return;
+                }
+
+                files.forEach(file => {
+                    const row = document.createElement("tr");
+
+                    const size = (file.fileSize / (1024 * 1024)).toFixed(2) + " MB";
+
+                    row.innerHTML = `
+                <td>${escapeHtml(file.fileName)}</td>
+                <td>${escapeHtml(file.contentType || "Unknown")}</td>
+                <td>${size}</td>
+                <td>${escapeHtml(file.senderUsername)}</td>
+                <td>${new Date(file.sharedAt).toLocaleString()}</td>
+                <td>
+                    <button type="button"
+                        onclick="downloadSharedFile(${file.shareId})">
+                        Download
+                    </button>
+                </td>
+            `;
+
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                tableBody.innerHTML = `
+            <tr><td colspan="6">Unable to load shared files.</td></tr>
+        `;
+                console.error(error);
+            }
+        }
+
+
+        async function loadSharedByMe() {
+            const tableBody = document.getElementById("sharedByMeTableBody");
+            const message = document.getElementById("sharedByMeMessage");
+
+            tableBody.innerHTML = `
+        <tr><td colspan="6">Loading shared files...</td></tr>
+    `;
+
+            try {
+                const response = await fetch("/api/shares/sent", {
+                    credentials: "same-origin",
+                    cache: "no-store"
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    tableBody.innerHTML = `
+                <tr><td colspan="6">Please login again.</td></tr>
+            `;
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error("Failed to load sent files.");
+                }
+
+                const files = await response.json();
+
+                // The outgoing-share count must come from /api/shares/sent.
+                const sentCount = document.getElementById("dashboardSentCount");
+                if (sentCount) {
+                    sentCount.textContent = Array.isArray(files) ? files.length : 0;
+                }
+
+                tableBody.innerHTML = "";
+
+                if (files.length === 0) {
+                    tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6">You haven't shared any files yet.</td>
+                </tr>
+            `;
+                    return;
+                }
+
+                files.forEach(file => {
+                    const row = document.createElement("tr");
+
+                    const size = (file.fileSize / (1024 * 1024)).toFixed(2) + " MB";
+
+                    row.innerHTML = `
+                <td>${escapeHtml(file.fileName)}</td>
+                <td>${escapeHtml(file.contentType || "Unknown")}</td>
+                <td>${size}</td>
+                <td>${escapeHtml(file.recipientUsername)}</td>
+                <td>${new Date(file.sharedAt).toLocaleString()}</td>
+                <td>
+    <button
+        type="button"
+        class="delete-btn"
+        onclick="revokeShare(${file.shareId}, this)">
+        Revoke Access
+    </button>
+</td>
+            `;
+
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                tableBody.innerHTML = `
+            <tr>
+                <td colspan="6">Unable to load sent files.</td>
+            </tr>
+        `;
+                console.error(error);
+            }
+        }
+
+
+        document.getElementById("shareFileForm").addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const fileId = document.getElementById("shareFileId").value;
+            const recipientEmail = document.getElementById("recipientEmail").value.trim();
+            const message = document.getElementById("shareFileMessage");
+            const button = this.querySelector("button[type='submit']");
+
+            message.textContent = "";
+            button.disabled = true;
+            button.textContent = "Sharing...";
+
+            try {
+                const response = await fetch(
+                    `/api/shares/${encodeURIComponent(fileId)}?recipientEmail=${encodeURIComponent(recipientEmail)}`,
+                    {
+                        method: "POST",
+                        credentials: "same-origin"
+                    }
+                );
+
+                const result = await response.text();
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = "/login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(result || "Unable to share file.");
+                }
+
+                message.textContent = "File shared successfully!";
+                message.style.color = "#22c55e";
+
+                this.reset();
+
+                // Refresh outgoing shares and the Dashboard counter immediately.
+                await loadSharedByMe();
+
+            } catch (error) {
+                message.textContent = error.message;
+                message.style.color = "#ef4444";
+            } finally {
+                button.disabled = false;
+                button.textContent = "Share File";
+            }
+        });
+
+
+
+        async function downloadSharedFile(shareId) {
+            try {
+                const response = await fetch(
+                    `/api/files/shares/${shareId}/download`,
+                    {
+                        method: "POST",
+                        credentials: "same-origin"
+                    }
+                );
+
+                if (response.status === 401) {
+                    window.location.href = "/login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Download failed. HTTP Status: " + response.status
+                    );
+                }
+
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+
+                const disposition = response.headers.get("Content-Disposition");
+                let filename = "shared-file";
+
+                if (disposition) {
+                    const match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+
+                    if (match) {
+                        filename = decodeURIComponent(match[1]);
+                    } else {
+                        const normalMatch = disposition.match(/filename="?([^";]+)"?/i);
+
+                        if (normalMatch) {
+                            filename = normalMatch[1];
+                        }
+                    }
+                }
+
+                const link = document.createElement("a");
+                link.href = objectUrl;
+                link.download = filename;
+
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+
+            } catch (error) {
+                alert("Download failed: " + error.message);
+                console.error(error);
+            }
+        }
+
+        async function revokeShare(shareId, button) {
+
+            const confirmed = confirm(
+                "Are you sure you want to revoke access to this file?"
+            );
+
+            if (!confirmed) return;
+
+            button.disabled = true;
+            button.textContent = "Revoking...";
+
+            try {
+                const response = await fetch(`/api/shares/${shareId}`, {
+                    method: "DELETE",
+                    credentials: "same-origin"
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = "/login.html";
+                    return;
+                }
+
+                if (!response.ok) {
+                    const message = await response.text();
+                    throw new Error(message || "Failed to revoke access.");
+                }
+
+                await loadSharedByMe();
+                await loadSharedWithMe();
+
+                alert("Access revoked successfully!");
+
+            } catch (error) {
+                alert(error.message);
+                button.disabled = false;
+                button.textContent = "Revoke Access";
+            }
+        }
+
+
+    </script>
+    <script>
+        async function loadCurrentUser() {
+            try {
+                const response = await fetch("/api/auth/me", { credentials: "same-origin" });
+                if (response.status === 401 || response.status === 403) {
+                    window.location.href = "/login.html";
+                    return;
+                }
+                if (!response.ok) throw new Error("Unable to load user");
+                const user = await response.json();
+                document.getElementById("userEmail").textContent = user.email;
+                document.getElementById("sidebarEmail").textContent = user.email;
+            } catch (error) {
+                document.getElementById("userEmail").textContent = "Connection error";
+                document.getElementById("sidebarEmail").textContent = "Unavailable";
+            }
+        }
+
+        async function logoutUser() {
+            const confirmed = window.confirm("Are you sure you want to logout?");
+            if (!confirmed) return;
+            const button = document.getElementById("logoutButton");
+            button.disabled = true;
+            button.textContent = "Signing out...";
+            try {
+                const response = await fetch("/api/auth/logout", {
+                    method: "POST",
+                    credentials: "same-origin"
+                });
+                if (response.ok) {
+                    window.location.href = "/login.html";
+                } else {
+                    button.disabled = false;
+                    button.textContent = "Sign out";
+                    alert("Logout failed. Please try again.");
+                }
+            } catch (error) {
+                button.disabled = false;
+                button.textContent = "Sign out";
+                alert("Unable to connect to server.");
+            }
+        }
+
+        loadCurrentUser();
+        loadMyFiles();
+        loadSharedWithMe();
+        loadSharedByMe();
+    </script>
+    <script>
+        (function () {
+            const links = document.querySelectorAll(".nav-link[data-view]");
+            const views = document.querySelectorAll(".view-section");
+            const title = document.getElementById("pageTitle");
+            const subtitle = document.getElementById("pageSubtitle");
+
+            function showView(viewId, updateHash = true) {
+                const target = document.getElementById(viewId);
+                if (!target || !target.classList.contains("view-section")) viewId = "dashboard";
+
+                views.forEach(view => {
+                    const isActive = view.id === viewId;
+                    view.classList.toggle("active-view", isActive);
+                    view.hidden = !isActive;
+                });
+
+                links.forEach(link => link.classList.toggle("active", link.dataset.view === viewId));
+
+                const activeView = document.getElementById(viewId);
+                title.textContent = activeView.dataset.title || "SecureVault";
+                subtitle.textContent = activeView.dataset.subtitle || "";
+
+                if (updateHash && location.hash !== "#" + viewId) {
+                    history.replaceState(null, "", "#" + viewId);
+                }
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+
+            links.forEach(link => link.addEventListener("click", event => {
+                event.preventDefault();
+                showView(link.dataset.view);
+            }));
+
+            document.querySelectorAll("[data-open-view]").forEach(button => {
+                button.addEventListener("click", () => showView(button.dataset.openView));
+            });
+
+            window.addEventListener("hashchange", () => showView(location.hash.slice(1), false));
+            showView(location.hash.slice(1) || "dashboard", false);
+        })();
+    </script>
+</body>
+
+</html>
