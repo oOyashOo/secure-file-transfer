@@ -7,14 +7,19 @@ import com.yashsomani.secure_file_transfer.repository.UserRepository;
 import com.yashsomani.secure_file_transfer.EncryptionResult;
 import com.yashsomani.secure_file_transfer.FileEncryptionService;
 import com.yashsomani.secure_file_transfer.repository.FileShareRepository;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 
 import java.util.List;
 
+/**
+ * File management service with method-level authorization.
+ *
+ * <p>Authorization is enforced at the service layer using {@code @PreAuthorize}
+ * to ensure that users can only access their own files.</p>
+ */
 @Service
 public class FileService {
 
@@ -35,6 +40,7 @@ public class FileService {
         this.fileShareRepository = fileShareRepository;
     }
 
+    @PreAuthorize("authentication.name == #ownerEmail")
     public FileMetadata uploadFile(
             MultipartFile file,
             String ownerEmail) throws Exception {
@@ -67,6 +73,7 @@ public class FileService {
         return fileRepository.save(metadata);
     }
 
+    @PreAuthorize("authentication.name == #ownerEmail")
     public List<FileMetadata> getMyFiles(String ownerEmail) {
 
         User owner = userRepository.findByEmail(ownerEmail)
@@ -75,6 +82,7 @@ public class FileService {
         return fileRepository.findByOwnerOrderByUploadedAtDesc(owner);
     }
 
+    @PreAuthorize("authentication.name == #ownerEmail")
     public FileMetadata getOwnedFile(
             Long fileId,
             String ownerEmail) {
@@ -87,6 +95,7 @@ public class FileService {
                         "File not found or access denied"));
     }
 
+    @PreAuthorize("authentication.name == #ownerEmail")
     @Transactional
     public void deleteMyFile(Long fileId, String ownerEmail) throws Exception {
 
@@ -108,5 +117,4 @@ public class FileService {
         // Delete database metadata
         fileRepository.delete(file);
     }
-
 }

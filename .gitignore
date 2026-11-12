@@ -5,5 +5,9 @@ target/
 .env
 *.log
 application-local.properties
+application-local.yml
 src/main/resources/application.properties
 keys/
+encrypted-uploads/
+decrypted-uploads/
+uploads/

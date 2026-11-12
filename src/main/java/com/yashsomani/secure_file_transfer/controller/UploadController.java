@@ -1,6 +1,8 @@
-package com.yashsomani.secure_file_transfer;
+package com.yashsomani.secure_file_transfer.controller;
 
+import com.yashsomani.secure_file_transfer.FileMetadata;
 import com.yashsomani.secure_file_transfer.service.FileService;
+import com.yashsomani.secure_file_transfer.service.FileValidationService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadController {
 
     private final FileService fileService;
+    private final FileValidationService validationService;
 
-    public UploadController(FileService fileService) {
+    public UploadController(FileService fileService, FileValidationService validationService) {
         this.fileService = fileService;
+        this.validationService = validationService;
     }
 
     @PostMapping("/api/upload")
@@ -23,10 +27,8 @@ public class UploadController {
             Authentication authentication) {
 
         try {
-            if (file.isEmpty()) {
-                return ResponseEntity.badRequest()
-                        .body("Please select a file.");
-            }
+            // Server-side validation
+            validationService.validateUpload(file);
 
             FileMetadata metadata = fileService.uploadFile(
                     file,
@@ -39,9 +41,12 @@ public class UploadController {
                     metadata.getEncryptedFilename()
             );
 
+        } catch (FileValidationService.FileValidationException e) {
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("File upload failed: " + e.getMessage());
+                    .body("File upload failed");
         }
     }
 }

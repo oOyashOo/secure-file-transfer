@@ -1,4 +1,3 @@
-
 package com.yashsomani.secure_file_transfer.service;
 
 import com.yashsomani.secure_file_transfer.User;
@@ -8,12 +7,18 @@ import com.yashsomani.secure_file_transfer.entity.FileShare;
 import com.yashsomani.secure_file_transfer.repository.UserRepository;
 import com.yashsomani.secure_file_transfer.repository.FileRepository;
 import com.yashsomani.secure_file_transfer.repository.FileShareRepository;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * File sharing service with method-level authorization.
+ *
+ * <p>Authorization is enforced at the service layer using {@code @PreAuthorize}
+ * to ensure that only the file owner can share, and only the sender can revoke.</p>
+ */
 @Service
 public class FileShareService {
 
@@ -49,6 +54,7 @@ public class FileShareService {
 
     // Share a file with another user
     @Transactional
+    @PreAuthorize("authentication.name == #senderEmail")
     public FileShareResponse shareFile(
             Long fileId,
             String recipientEmail,
@@ -89,6 +95,7 @@ public class FileShareService {
 
     // Get files shared with the logged-in user
     @Transactional(readOnly = true)
+    @PreAuthorize("authentication.name == #email")
     public List<FileShareResponse> getSharedWithMe(String email) {
 
         User recipient = userRepository.findByEmail(email)
@@ -103,6 +110,7 @@ public class FileShareService {
 
     // Get files shared by the logged-in user
     @Transactional(readOnly = true)
+    @PreAuthorize("authentication.name == #email")
     public List<FileShareResponse> getSharedByMe(String email) {
 
         User sender = userRepository.findByEmail(email)
@@ -117,13 +125,14 @@ public class FileShareService {
 
     // Get a file shared with the logged-in recipient
     @Transactional(readOnly = true)
+    @PreAuthorize("authentication.name == #recipientEmail")
     public FileMetadata getSharedFile(Long shareId, String recipientEmail) {
 
         User recipient = userRepository.findByEmail(recipientEmail)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         FileShare share = fileShareRepository
-                .findByIdAndRecipientAndRevokedFalse(shareId, recipient)
+                .findWithFileByIdAndRecipientAndRevokedFalse(shareId, recipient)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Shared file not found or access denied"));
 
@@ -132,6 +141,7 @@ public class FileShareService {
 
     // Revoke sharing access
     @Transactional
+    @PreAuthorize("authentication.name == #senderEmail")
     public void revokeShare(Long shareId, String senderEmail) {
 
         User sender = userRepository.findByEmail(senderEmail)

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Default / Fallback configuration -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <logger name="com.yashsomani.secure_file_transfer" level="INFO" />
+
+    <!-- Development profile -->
+    <springProfile name="dev">
+        <logger name="org.springframework" level="INFO" />
+        <logger name="org.hibernate" level="INFO" />
+        <logger name="com.yashsomani.secure_file_transfer" level="DEBUG" />
+    </springProfile>
+
+    <!-- Production profile: SQL logging strictly suppressed -->
+    <springProfile name="prod">
+        <logger name="org.hibernate" level="WARN" />
+        <logger name="org.hibernate.SQL" level="OFF" />
+        <logger name="org.hibernate.type.descriptor.sql" level="OFF" />
+        <logger name="org.springframework" level="INFO" />
+        <logger name="com.yashsomani.secure_file_transfer" level="INFO" />
+    </springProfile>
+
+</configuration>

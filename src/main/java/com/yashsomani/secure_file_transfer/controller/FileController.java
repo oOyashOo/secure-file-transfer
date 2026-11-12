@@ -1,5 +1,6 @@
-package com.yashsomani.secure_file_transfer;
+package com.yashsomani.secure_file_transfer.controller;
 
+import com.yashsomani.secure_file_transfer.FileMetadata;
 import com.yashsomani.secure_file_transfer.service.FileService;
 
 import org.springframework.http.ResponseEntity;

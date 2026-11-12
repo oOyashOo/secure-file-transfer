@@ -1,4 +1,4 @@
-package com.yashsomani.secure_file_transfer;
+package com.yashsomani.secure_file_transfer.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

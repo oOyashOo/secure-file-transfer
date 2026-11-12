@@ -1,4 +1,4 @@
-package com.yashsomani.secure_file_transfer;
+package com.yashsomani.secure_file_transfer.controller;
 
 import com.yashsomani.secure_file_transfer.service.FileService;
 

@@ -1,13 +1,18 @@
+package com.yashsomani.secure_file_transfer.controller;
 
-package com.yashsomani.secure_file_transfer;
-
+import com.yashsomani.secure_file_transfer.User;
+import com.yashsomani.secure_file_transfer.dto.RegistrationRequest;
 import com.yashsomani.secure_file_transfer.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
+@Validated
 public class RegisterController {
 
     private final UserService userService;
@@ -17,24 +22,17 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(
-            @RequestParam String username,
-            @RequestParam String email,
-            @RequestParam String password) {
-
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegistrationRequest request) {
         try {
             User user = userService.registerUser(
-                    username, email, password
+                    request.getUsername(), request.getEmail(), request.getPassword()
             );
 
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body("Registration successful! User ID: "
-                            + user.getId());
+                    .body("Registration successful! User ID: " + user.getId());
 
         } catch (IllegalArgumentException e) {
-
-            return ResponseEntity.badRequest()
-                    .body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

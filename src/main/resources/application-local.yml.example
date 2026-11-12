@@ -1,0 +1,15 @@
+# Local development configuration template.
+# Copy this file to application-local.yml and fill in real values.
+# application-local.yml is git-ignored and must never be committed.
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/secure_file_transfer}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:CHANGE_ME}
+
+# Master key used to protect encryption data-keys at rest (Phase 5+).
+# Generate with: openssl rand -base64 32
+app:
+  encryption:
+    master-key: ${APP_ENCRYPTION_MASTER_KEY:CHANGE_ME}

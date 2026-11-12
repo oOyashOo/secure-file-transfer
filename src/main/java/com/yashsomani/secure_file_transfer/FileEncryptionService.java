@@ -16,6 +16,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +33,7 @@ public class FileEncryptionService {
     private static final String CURRENT_KEY_VERSION = "v2";
 
     private final KeyStorageProvider keyStorageProvider;
+
 
     public FileEncryptionService(KeyStorageProvider keyStorageProvider) {
         this.keyStorageProvider = keyStorageProvider;
@@ -115,6 +117,78 @@ public class FileEncryptionService {
         return HexFormat.of().formatHex(digest.digest());
     }
 
+    /**
+     * Decrypts an encrypted file directly to the provided OutputStream.
+     * No plaintext file is written to disk. The caller is responsible for
+     * providing the OutputStream (e.g., HTTP response output stream).
+     *
+     * @param encryptedFileName name of the encrypted file in encrypted-uploads/
+     * @param keyVersion key version used for encryption
+     * @param outputStream stream to write decrypted plaintext to
+     * @throws Exception if decryption fails or file not found
+     */
+    public void decryptFileToStream(String encryptedFileName, String keyVersion, OutputStream outputStream)
+            throws Exception {
+
+        encryptedFileName = Paths.get(encryptedFileName)
+                .getFileName().toString();
+
+        Path encryptedPath = encryptedDirectory.resolve(encryptedFileName).normalize();
+
+        if (!encryptedPath.startsWith(encryptedDirectory)
+                || !Files.isRegularFile(encryptedPath)) {
+            throw new IOException("Encrypted file not found!");
+        }
+
+        if (!encryptedFileName.endsWith(".enc")) {
+            throw new IOException("Invalid encrypted file!");
+        }
+
+        SecretKey secretKey = loadExistingKey(keyVersion);
+
+        try (
+                InputStream inputStream = Files.newInputStream(encryptedPath)) {
+            byte[] nonce = inputStream.readNBytes(NONCE_SIZE);
+
+            if (nonce.length != NONCE_SIZE) {
+                throw new IOException("Invalid encrypted file!");
+            }
+
+            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+
+            cipher.init(
+                    Cipher.DECRYPT_MODE,
+                    secretKey,
+                    new GCMParameterSpec(TAG_SIZE, nonce));
+
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+
+                byte[] decrypted = cipher.update(buffer, 0, bytesRead);
+
+                if (decrypted != null) {
+                    outputStream.write(decrypted);
+                }
+            }
+
+            // Verifies the GCM authentication tag
+            byte[] finalBytes = cipher.doFinal();
+            outputStream.write(finalBytes);
+        }
+    }
+
+    /**
+     * Legacy method that decrypts to a file in decrypted-uploads/.
+     * Kept for backward compatibility but should be avoided for new code.
+     * Prefer {@link #decryptFileToStream(String, String, OutputStream)}.
+     *
+     * @param encryptedFileName name of the encrypted file
+     * @param keyVersion key version used for encryption
+     * @return name of the decrypted file (created in decrypted-uploads/)
+     * @throws Exception if decryption fails
+     */
     public String decryptFile(String encryptedFileName, String keyVersion)
             throws Exception {
 

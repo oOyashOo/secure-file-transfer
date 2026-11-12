@@ -1,17 +1,14 @@
+package com.yashsomani.secure_file_transfer.controller;
 
-package com.yashsomani.secure_file_transfer;
-
-import java.util.List;
-
-import com.yashsomani.secure_file_transfer.service.UserService;
-
+import com.yashsomani.secure_file_transfer.security.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -22,13 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class LoginController {
 
-    private final UserService userService;
-
+    private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository =
             new HttpSessionSecurityContextRepository();
 
-    public LoginController(UserService userService) {
-        this.userService = userService;
+    public LoginController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/login")
@@ -39,49 +35,43 @@ public class LoginController {
             HttpServletResponse response) {
 
         try {
-            User user = userService.loginUser(email, password);
+            // Authenticate through Spring Security's standard pipeline
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
 
+            // Create session if needed
             request.getSession(true);
 
-            var authentication =
-                    UsernamePasswordAuthenticationToken.authenticated(
-                            user.getEmail(),
-                            null,
-                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
-                    );
-
-            SecurityContext context =
-                    SecurityContextHolder.createEmptyContext();
-
+            // Set the authenticated context
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authentication);
-
             SecurityContextHolder.setContext(context);
 
-            securityContextRepository.saveContext(
-                    context, request, response
-            );
+            // Persist the context to the session
+            securityContextRepository.saveContext(context, request, response);
 
-            return ResponseEntity.ok(
-                    "Login successful! Welcome " + user.getUsername()
-            );
+            // Extract username from our UserPrincipal
+            String username = "user";
+            if (authentication.getPrincipal() instanceof UserPrincipal principal) {
+                username = principal.getUser().getUsername();
+            }
 
-        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok("Login successful! Welcome " + username);
 
+        } catch (org.springframework.security.core.AuthenticationException e) {
             SecurityContextHolder.clearContext();
-
+            // Consistent error message to prevent account enumeration
             return ResponseEntity.badRequest()
-                    .body(e.getMessage());
+                    .body("Invalid email or password.");
         }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(
-            HttpServletRequest request) {
-
+    public ResponseEntity<String> logout(HttpServletRequest request) {
         SecurityContextHolder.clearContext();
 
         HttpSession session = request.getSession(false);
-
         if (session != null) {
             session.invalidate();
         }
@@ -89,6 +79,3 @@ public class LoginController {
         return ResponseEntity.ok("Logout successful!");
     }
 }
-
-
-

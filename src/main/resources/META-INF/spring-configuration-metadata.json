@@ -1,0 +1,11 @@
+{
+  "groups": [],
+  "properties": [
+    {
+      "name": "app.encryption.master-key",
+      "type": "java.lang.String",
+      "description": "Master encryption key material for the application. Externalized via the APP_ENCRYPTION_MASTER_KEY environment variable. Never commit a real key; the placeholder value is used only for local development."
+    }
+  ],
+  "hints": []
+}
